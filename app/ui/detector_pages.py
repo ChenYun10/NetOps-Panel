@@ -618,3 +618,26 @@ def make_upnp_page(parent, root):
         return public_expose.run_upnp_check()
     return DetectorPage(parent, root, "UPnP 状态", fields, run,
                         desc="SSDP 发现局域网 UPnP 设备，检测路由器 UPnP 是否开启并查询公网 IP。")
+
+
+def make_dns_page(parent, root):
+    """传统 DNS（UDP/TCP 明文）检测。"""
+    from app.core import dns_check
+    fields = [
+        Field("DNS服务器", "server", "223.5.5.5", "entry"),
+        Field("端口", "port", "53", "entry"),
+        Field("待解析域名", "domain", "www.baidu.com", "entry"),
+        Field("协议", "proto", "UDP", "combo", options=["UDP", "TCP", "BOTH"]),
+    ]
+    def run(vals):
+        try:
+            port = int(vals["port"])
+        except ValueError:
+            log.error("端口必须是数字")
+            return {"error": "端口格式错误"}
+        if not vals["domain"]:
+            log.error("请输入待解析域名")
+            return {"error": "域名为空"}
+        return dns_check.run_dns_check(vals["server"], port, vals["domain"], vals["proto"])
+    return DetectorPage(parent, root, "传统 DNS 检测 (UDP/TCP)", fields, run,
+                        desc="未加密的传统 DNS 查询检测，可自定义服务器与端口（默认 53），支持 UDP/TCP/两者对比与 TCP 回退判定。")

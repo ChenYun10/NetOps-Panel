@@ -48,6 +48,7 @@ MENU_GROUPS = [
         ("tcp", "TCP握手检测", "tcp"),
         ("ssh", "SSH检测", "ssh"),
         ("https", "HTTPS检测", "https"),
+        ("dns", "传统DNS检测", "dns"),
         ("doh", "DoH检测", "doh"),
         ("dot", "DoT检测", "dot"),
     ]),
@@ -195,6 +196,8 @@ class MainWindow:
             return dp.make_https_page(parent, root)
         if ptype == "doh":
             return dp.make_doh_page(parent, root)
+        if ptype == "dns":
+            return dp.make_dns_page(parent, root)
         if ptype == "dot":
             return dp.make_dot_page(parent, root)
         if ptype == "ipv6":

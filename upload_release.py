@@ -3,7 +3,7 @@
 import subprocess, json, urllib.request, hashlib, os
 
 EXE = "dist/NetOpsPanel.exe"
-VERSION = "v1.1.0"
+VERSION = "v1.1.1"
 REPO = "ChenYun10/NetOps-Panel"
 
 # 1. 拿 token（不 echo）
@@ -27,7 +27,7 @@ sha = h.hexdigest()
 size_mb = os.path.getsize(EXE) / (1024 * 1024)
 
 # 3. Release 说明
-body = f"""# NetOps Panel v1.1.0 网络运维检测面板
+body = f"""# NetOps Panel v1.1.1 网络运维检测面板
 
 深色科技风格的 Windows 桌面网络运维工具，左侧竖向导航 + 右侧卡片式工作台。
 **单文件 exe，双击即用，无需安装 Python 或任何依赖。**
@@ -39,6 +39,11 @@ body = f"""# NetOps Panel v1.1.0 网络运维检测面板
 | `NetOpsPanel.exe` | 单文件可执行程序（{size_mb:.1f} MB） |
 
 - **SHA256**：`{sha}`
+
+## v1.1.1 新增
+
+- **传统 DNS 检测（UDP/TCP 明文）**：未加密 DNS 查询，可自定义服务器与端口（默认 53），
+  支持 UDP / TCP / 两者对比，并判定 UDP 截断(TC)后的 TCP 回退支持
 
 ## v1.1.0 新增
 
