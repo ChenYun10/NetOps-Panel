@@ -529,7 +529,7 @@ def make_analysis_page(parent, root):
         except Exception as e:
             log.error(f"读取配置失败: {e}")
         return {"done": True}
-    return DetectorPage(parent, root, "网络分析", fields, run,
+    return DetectorPage(parent, root, "网络综合分析", fields, run,
                         desc="综合分析本机网络配置与接口信息。")
 
 

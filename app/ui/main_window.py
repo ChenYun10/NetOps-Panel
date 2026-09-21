@@ -41,7 +41,7 @@ MENU_GROUPS = [
         ("session", "会话测试", "session"),
     ]),
     ("网络分析", [
-        ("analysis", "网络分析", "analysis"),
+        ("analysis", "网络综合分析", "analysis"),
         ("capture", "活动连接", "capture"),
         ("dhcp", "DHCP检测", "dhcp"),
     ]),
