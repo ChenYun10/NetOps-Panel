@@ -441,10 +441,10 @@ def make_ipconflict_page(parent, root):
 
 
 def make_netstat_page(parent, root):
-    """数据抓包（简化）：展示当前网络连接（netstat）。"""
+    """活动连接：展示当前网络连接（netstat）。"""
     fields = []
     def run(vals):
-        log.info("抓取当前网络连接…")
+        log.info("抓取当前活动连接…")
         try:
             out = syscmd.run_capture(["netstat", "-ano"], timeout=10)
             for line in out.splitlines()[:200]:
@@ -452,8 +452,8 @@ def make_netstat_page(parent, root):
         except Exception as e:
             log.error(f"抓取失败: {e}")
         return {"done": True}
-    return DetectorPage(parent, root, "数据抓包", fields, run,
-                        desc="展示当前网络连接（netstat，需管理员权限查看完整 PID）。")
+    return DetectorPage(parent, root, "活动连接", fields, run,
+                        desc="展示当前活动网络连接（netstat，需管理员权限查看完整 PID）。")
 
 
 def make_health_page(parent, root):

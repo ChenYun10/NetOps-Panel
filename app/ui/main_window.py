@@ -42,7 +42,7 @@ MENU_GROUPS = [
     ]),
     ("分析与抓包", [
         ("analysis", "网络分析", "analysis"),
-        ("capture", "数据抓包", "capture"),
+        ("capture", "活动连接", "capture"),
         ("dhcp", "DHCP检测", "dhcp"),
     ]),
     ("高级检测", [
