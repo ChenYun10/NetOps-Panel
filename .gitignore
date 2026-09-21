@@ -1,0 +1,14 @@
+# Python 运行时与构建产物
+__pycache__/
+*.pyc
+.venv/
+venv/
+build/
+dist/
+*.spec
+
+# 系统/编辑器
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
