@@ -25,9 +25,28 @@ PUBLIC_V6_TARGETS = [
 ]
 
 
+def _is_temporary(ip):
+    """
+    判断是否为隐私扩展临时地址。
+    稳定地址（EUI-64）的接口标识符(IID)第 4-5 字节固定为 ff:fe；
+    临时地址 IID 随机生成，无此特征。
+    """
+    try:
+        obj = ipaddress.ip_address(ip)
+        if obj.version != 6:
+            return False
+        iid = obj.packed[-8:]  # 后 8 字节 = IID
+        return iid[3:5] != b"\xff\xfe"
+    except Exception:
+        return False
+
+
 def get_ipv6_addresses():
-    """返回本机所有全局 IPv6 地址列表（过滤链路本地 fe80::）。"""
-    addrs = []
+    """
+    返回本机所有全局 IPv6 地址列表。
+    稳定地址（EUI-64）优先，隐私扩展临时地址靠后。
+    """
+    addrs = set()
     try:
         for name, addr_list in psutil.net_if_addrs().items():
             for a in addr_list:
@@ -37,36 +56,49 @@ def get_ipv6_addresses():
                         obj = ipaddress.ip_address(ip)
                         # 过滤链路本地/回环，只保留全局单播
                         if obj.is_global and not obj.is_multicast:
-                            addrs.append(ip)
+                            addrs.add(ip)
                     except ValueError:
                         continue
     except Exception:
         pass
-    return sorted(set(addrs))
+    # 稳定地址优先，临时地址靠后
+    return sorted(addrs, key=lambda ip: 1 if _is_temporary(ip) else 0)
+
+
+def get_stable_ipv6():
+    """返回首选稳定全局 IPv6 地址（非临时），无则返回 None。"""
+    addrs = get_ipv6_addresses()
+    return addrs[0] if addrs else None
 
 
 def get_ipv6_gateway():
     """解析 IPv6 默认网关（route print -6 里 ::/0 的下一跳）。"""
     try:
         out = syscmd.run_capture(["route", "print", "-6"], timeout=5)
-        # 找目标 ::/0 且掩码 ::/0 的行，网关在第三列
         for line in out.splitlines():
             parts = line.split()
-            if len(parts) >= 4 and parts[0] == "::/0" and parts[1] == "::/0":
-                gw = parts[2]
-                if gw not in ("On-link", "On-link"):
-                    return gw
-                # 有时网关是 "On-link"，取接口列
-                if len(parts) >= 4 and ":" in parts[3]:
-                    return parts[3]
-        # 兜底：netsh 查
+            # 找网络目标列是 ::/0 的行，网关在其下一列（格式因系统而异）
+            for i, p in enumerate(parts):
+                if p == "::/0" and i + 1 < len(parts):
+                    gw = parts[i + 1]
+                    try:
+                        if ipaddress.ip_address(gw).version == 6:
+                            return gw
+                    except ValueError:
+                        continue
+        # 兜底：netsh interface ipv6 show route 的 ::/0 默认路由
         out2 = syscmd.run_capture(
             ["netsh", "interface", "ipv6", "show", "route"], timeout=5)
         for line in out2.splitlines():
-            if "::/0" in line and "fe80::" in line:
-                m = re.search(r"(fe80::[0-9a-fA-F:]+)", line)
-                if m:
-                    return m.group(1)
+            if "::/0" in line:
+                m = re.search(r"([0-9a-fA-F:]+%?\d*)", line)
+                if m and ":" in m.group(1):
+                    gw = m.group(1).split("%")[0]
+                    try:
+                        if ipaddress.ip_address(gw).version == 6:
+                            return gw
+                    except ValueError:
+                        continue
     except Exception:
         pass
     return None

@@ -53,9 +53,19 @@ def get_public_ipv4(timeout=5):
 def get_public_ipv6(timeout=5):
     """
     查询出口公网 IPv6 地址。失败返回 None。
-    优先走外部 API（验证 IPv6 出网），失败则回退本机全局 IPv6 地址
-    （IPv6 端到端设计，全局单播地址即公网地址）。
+
+    优先用本机稳定全局 IPv6 地址（IPv6 端到端设计，全局单播即公网地址，
+    无 NAT，且比外部 API 快而准）；外部 API 仅作兜底。
     """
+    # 1) 本机稳定全局 IPv6 地址（首选，最快最准）
+    try:
+        from . import ipv6_check
+        stable = ipv6_check.get_stable_ipv6()
+        if stable:
+            return stable
+    except Exception:
+        pass
+    # 2) 外部 API 兜底（走 IPv6 网络验证出网）
     for url in IPV6_SOURCES:
         try:
             req = urllib.request.Request(url, headers={"User-Agent": "NetOps-Panel/1.0"})
@@ -64,7 +74,7 @@ def get_public_ipv6(timeout=5):
                 return ip
         except Exception:
             continue
-    # 兜底：本机全局 IPv6 地址
+    # 3) 任意全局 IPv6 地址（含临时地址）
     try:
         from . import ipv6_check
         addrs = ipv6_check.get_ipv6_addresses()

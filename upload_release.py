@@ -3,7 +3,7 @@
 import subprocess, json, urllib.request, hashlib, os
 
 EXE = "dist/NetOpsPanel.exe"
-VERSION = "v1.0.0"
+VERSION = "v1.1.0"
 REPO = "ChenYun10/NetOps-Panel"
 
 # 1. 拿 token（不 echo）
@@ -27,7 +27,7 @@ sha = h.hexdigest()
 size_mb = os.path.getsize(EXE) / (1024 * 1024)
 
 # 3. Release 说明
-body = f"""# NetOps Panel v1.0.0 网络运维检测面板
+body = f"""# NetOps Panel v1.1.0 网络运维检测面板
 
 深色科技风格的 Windows 桌面网络运维工具，左侧竖向导航 + 右侧卡片式工作台。
 **单文件 exe，双击即用，无需安装 Python 或任何依赖。**
@@ -40,10 +40,19 @@ body = f"""# NetOps Panel v1.0.0 网络运维检测面板
 
 - **SHA256**：`{sha}`
 
+## v1.1.0 新增
+
+- **IPv6 检测**：本机 IPv6 地址、IPv6 默认网关、IPv6 支持情况
+- **IPv6 网关转发测试**：ping6 网关 + ping6 公网 IPv6，判断网关是否正常转发
+- **IPv6 连通性测试**：ping6 多个公网 IPv6 目标（阿里/Cloudflare/CNNIC DNS）
+- **公网暴露测试**：查询出口公网 IPv4 + 扫描常见端口是否对公网开放
+- **UPnP 状态检测**：SSDP 发现路由器，检测 UPnP 是否开启并查询公网 IP
+- **概览首页新增「公网 IPv4」「公网 IPv6」卡片**：实时显示出口公网地址
+
 ## 功能特性
 
 ### 首页工作台
-- 本机 IP / 网关 / DNS / 外网连通性卡片 + 各节点 Ping 延迟
+- 本机 IP / 网关 / DNS / 公网 IPv4 / 公网 IPv6 / 外网连通卡片 + 各节点 Ping 延迟
 - CPU / 内存 / 磁盘占用环形仪表盘 + 实时上下行流量曲线
 - 系统信息：主机名、运行时长、内存剩余、磁盘剩余（正确识别 Windows 10/11）
 
