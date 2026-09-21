@@ -54,7 +54,7 @@
 |---|---|
 | **IPv6 检测** | 本机 IPv6 地址、IPv6 默认网关、IPv6 支持情况 |
 | **IPv6 网关转发测试** | ping6 网关 + ping6 公网 IPv6，判断网关是否正常转发 |
-| **IPv6 连通性测试** | ping6 多个公网 IPv6 目标（阿里/Cloudflare/CNNIC DNS） |
+| **IPv6 连通性测试** | ping6 多个公网 IPv6 目标（阿里/Cloudflare DNS） |
 | **公网暴露测试** | 查询出口公网 IPv4 + 扫描常见端口是否对公网开放 |
 | **UPnP 状态** | SSDP 发现路由器，检测 UPnP 是否开启并查询公网 IP |
 
