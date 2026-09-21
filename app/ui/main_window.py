@@ -123,6 +123,14 @@ class MainWindow:
         canvas.bind("<Configure>", lambda e: canvas.itemconfigure(
             self._menu_window, width=e.width))
 
+        # 鼠标滚轮滚动菜单（仅当鼠标位于侧边栏范围内时生效，
+        # 避免干扰内容区日志面板等自身的滚动）
+        def _on_mousewheel(event):
+            if event.x_root <= sidebar.winfo_rootx() + sidebar.winfo_width():
+                canvas.yview_scroll(int(-event.delta / 120), "units")
+
+        canvas.bind_all("<MouseWheel>", _on_mousewheel)
+
         # 逐组添加菜单
         for group_title, items in MENU_GROUPS:
             tk.Label(menu_frame, text=group_title, bg=theme.BG_SIDE,
