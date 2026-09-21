@@ -155,6 +155,14 @@ class StatCard(tk.Frame):
 
     def set(self, value, color=None, sub=None, sub_color=None):
         self.val_lbl.config(text=value, fg=color or self.val_lbl.cget("fg"))
+        # 长文本（IPv6 地址等）自动缩小字号，避免被卡片截断
+        n = len(str(value))
+        if n > 32:
+            self.val_lbl.config(font=theme.font(9, bold=True))
+        elif n > 20:
+            self.val_lbl.config(font=theme.font(11, bold=True))
+        else:
+            self.val_lbl.config(font=theme.font(20, bold=True))
         if sub is not None:
             self.sub_lbl.config(text=sub, fg=sub_color or theme.TEXT_FAINT)
 
