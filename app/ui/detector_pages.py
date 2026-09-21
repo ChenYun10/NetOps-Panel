@@ -641,3 +641,23 @@ def make_dns_page(parent, root):
         return dns_check.run_dns_check(vals["server"], port, vals["domain"], vals["proto"])
     return DetectorPage(parent, root, "传统 DNS 检测 (UDP/TCP)", fields, run,
                         desc="未加密的传统 DNS 查询检测，可自定义服务器与端口（默认 53），支持 UDP/TCP/两者对比与 TCP 回退判定。")
+
+
+def make_arp_page(parent, root):
+    """ARP 检测。"""
+    from app.core import arp_check
+    fields = []
+    def run(vals):
+        return arp_check.run_arp_check()
+    return DetectorPage(parent, root, "ARP 检测", fields, run,
+                        desc="解析本机 ARP 表，列出局域网 IP-MAC 映射并识别 MAC 厂商。")
+
+
+def make_arp_spoof_page(parent, root):
+    """ARP 欺诈检测。"""
+    from app.core import arp_check
+    fields = []
+    def run(vals):
+        return arp_check.run_arp_spoof_check()
+    return DetectorPage(parent, root, "ARP 欺诈检测", fields, run,
+                        desc="识别 MAC 复用（ARP 欺骗）、IP 冲突，并提示核对网关 MAC。")

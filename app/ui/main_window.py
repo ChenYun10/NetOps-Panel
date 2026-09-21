@@ -30,6 +30,8 @@ MENU_GROUPS = [
         ("camera", "摄像头扫描", "camera"),
         ("security", "安全自测", "security"),
         ("audit", "日志审计", "audit"),
+        ("arp", "ARP检测", "arp"),
+        ("arp_spoof", "ARP欺诈检测", "arp_spoof"),
         ("ipconflict", "IP冲突检测", "ipconflict"),
     ]),
     ("测速与会话", [
@@ -237,6 +239,10 @@ class MainWindow:
             return dp.make_dhcp_page(parent, root)
         if ptype == "ipconflict":
             return dp.make_ipconflict_page(parent, root)
+        if ptype == "arp":
+            return dp.make_arp_page(parent, root)
+        if ptype == "arp_spoof":
+            return dp.make_arp_spoof_page(parent, root)
         if ptype == "capture":
             return dp.make_netstat_page(parent, root)
         if ptype == "health":
