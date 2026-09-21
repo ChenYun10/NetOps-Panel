@@ -40,7 +40,7 @@ MENU_GROUPS = [
         ("speed_lan", "内网测速", "iperf"),
         ("session", "会话测试", "session"),
     ]),
-    ("分析与抓包", [
+    ("网络分析", [
         ("analysis", "网络分析", "analysis"),
         ("capture", "活动连接", "capture"),
         ("dhcp", "DHCP检测", "dhcp"),
