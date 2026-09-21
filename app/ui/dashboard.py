@@ -19,7 +19,7 @@ from app.core import monitors
 from app.core import net_health
 
 # 外网连通性检测的参考节点
-PING_NODES = ["223.5.5.5", "114.114.114.114", "8.8.8.8", "www.baidu.com"]
+PING_NODES = ["223.5.5.5", "8.8.8.8", "www.baidu.com"]
 
 
 class Dashboard(tk.Frame):

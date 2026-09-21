@@ -21,7 +21,6 @@ PUBLIC_V6_TARGETS = [
     "2400:3200::1",           # 阿里公共 DNS IPv6
     "2400:3200:baba::1",      # 阿里公共 DNS IPv6 备用
     "2606:4700:4700::1111",   # Cloudflare DNS IPv6
-    "240c::6666",             # CNNIC DNS IPv6
 ]
 
 
