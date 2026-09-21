@@ -568,3 +568,53 @@ def make_iperf_page(parent, root):
 
     return DetectorPage(parent, root, "内网测速 (iperf)", fields, run,
                         desc="主动连接内网 iperf 服务端测速（服务端启动：iperf3 -s -p 5201）。未装 iperf3 时自动用内置 TCP 测速兜底。")
+
+
+def make_ipv6_page(parent, root):
+    """IPv6 检测。"""
+    from app.core import ipv6_check
+    fields = []
+    def run(vals):
+        return ipv6_check.run_ipv6_check()
+    return DetectorPage(parent, root, "IPv6 检测", fields, run,
+                        desc="检测本机 IPv6 地址、默认网关与 IPv6 支持情况。")
+
+
+def make_ipv6_forward_page(parent, root):
+    """IPv6 网关转发测试。"""
+    from app.core import ipv6_check
+    fields = []
+    def run(vals):
+        return ipv6_check.run_ipv6_gateway_forward()
+    return DetectorPage(parent, root, "IPv6 网关转发测试", fields, run,
+                        desc="ping6 本机 IPv6 网关 + ping6 公网 IPv6，判断网关是否正常转发 IPv6 流量。")
+
+
+def make_ipv6_conn_page(parent, root):
+    """IPv6 连通性测试。"""
+    from app.core import ipv6_check
+    fields = []
+    def run(vals):
+        return ipv6_check.run_ipv6_connectivity()
+    return DetectorPage(parent, root, "IPv6 连通性测试", fields, run,
+                        desc="ping6 多个公网 IPv6 目标（阿里/Cloudflare/CNNIC DNS），测试 IPv6 出网连通性。")
+
+
+def make_expose_page(parent, root):
+    """公网暴露测试。"""
+    from app.core import public_expose
+    fields = []
+    def run(vals):
+        return public_expose.run_public_expose()
+    return DetectorPage(parent, root, "公网暴露测试", fields, run,
+                        desc="查询出口公网 IPv4，并从公网视角扫描常见端口是否暴露。")
+
+
+def make_upnp_page(parent, root):
+    """UPnP 状态检测。"""
+    from app.core import public_expose
+    fields = []
+    def run(vals):
+        return public_expose.run_upnp_check()
+    return DetectorPage(parent, root, "UPnP 状态", fields, run,
+                        desc="SSDP 发现局域网 UPnP 设备，检测路由器 UPnP 是否开启并查询公网 IP。")

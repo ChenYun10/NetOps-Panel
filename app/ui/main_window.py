@@ -51,6 +51,13 @@ MENU_GROUPS = [
         ("doh", "DoH检测", "doh"),
         ("dot", "DoT检测", "dot"),
     ]),
+    ("IPv6 与公网", [
+        ("ipv6", "IPv6检测", "ipv6"),
+        ("ipv6_forward", "IPv6网关转发测试", "ipv6_forward"),
+        ("ipv6_conn", "IPv6连通性测试", "ipv6_conn"),
+        ("expose", "公网暴露测试", "expose"),
+        ("upnp", "UPnP状态", "upnp"),
+    ]),
 ]
 
 
@@ -190,6 +197,16 @@ class MainWindow:
             return dp.make_doh_page(parent, root)
         if ptype == "dot":
             return dp.make_dot_page(parent, root)
+        if ptype == "ipv6":
+            return dp.make_ipv6_page(parent, root)
+        if ptype == "ipv6_forward":
+            return dp.make_ipv6_forward_page(parent, root)
+        if ptype == "ipv6_conn":
+            return dp.make_ipv6_conn_page(parent, root)
+        if ptype == "expose":
+            return dp.make_expose_page(parent, root)
+        if ptype == "upnp":
+            return dp.make_upnp_page(parent, root)
         if ptype == "ping":
             return dp.make_ping_page(parent, root)
         if ptype == "traceroute":

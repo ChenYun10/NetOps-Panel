@@ -34,10 +34,10 @@ class Dashboard(tk.Frame):
 
     # ---------- 构建 UI ----------
     def _build(self):
-        # ===== 顶部信息卡片行 =====
+        # ===== 顶部信息卡片行（两行：3 + 3）=====
         top = tk.Frame(self, bg=theme.BG)
         top.pack(fill="x", padx=16, pady=(16, 8))
-        for i in range(4):
+        for i in range(3):
             top.grid_columnconfigure(i, weight=1, uniform="cards")
 
         self.card_ip = StatCard(top, "本机 IP", "--", theme.TEXT_ACCENT)
@@ -47,10 +47,16 @@ class Dashboard(tk.Frame):
         self.card_gw.grid(row=0, column=1, sticky="ew", padx=8, ipady=10, ipadx=10)
 
         self.card_dns = StatCard(top, "DNS 服务器", "--", theme.TEXT_ACCENT)
-        self.card_dns.grid(row=0, column=2, sticky="ew", padx=8, ipady=10, ipadx=10)
+        self.card_dns.grid(row=0, column=2, sticky="ew", padx=(8, 0), ipady=10, ipadx=10)
+
+        self.card_pub4 = StatCard(top, "公网 IPv4", "查询中…", theme.GREEN)
+        self.card_pub4.grid(row=1, column=0, sticky="ew", padx=(0, 8), pady=(8, 0), ipady=10, ipadx=10)
+
+        self.card_pub6 = StatCard(top, "公网 IPv6", "查询中…", theme.GREEN)
+        self.card_pub6.grid(row=1, column=1, sticky="ew", padx=8, pady=(8, 0), ipady=10, ipadx=10)
 
         self.card_net = StatCard(top, "外网连通", "检测中…", theme.ORANGE)
-        self.card_net.grid(row=0, column=3, sticky="ew", padx=(8, 0), ipady=10, ipadx=10)
+        self.card_net.grid(row=1, column=2, sticky="ew", padx=(8, 0), pady=(8, 0), ipady=10, ipadx=10)
 
         # ===== 中部：仪表盘 + 流量曲线 =====
         mid = tk.Frame(self, bg=theme.BG)
@@ -133,7 +139,7 @@ class Dashboard(tk.Frame):
         self.card_dns.set(dns[0] if dns else "未检测到",
                           sub=", ".join(dns[1:]) if len(dns) > 1 else "")
 
-        # 外网连通 + 节点延迟（后台线程，避免阻塞）
+        # 外网连通 + 节点延迟 + 公网 IP（后台线程，避免阻塞）
         def worker():
             ok, detail = net_health.check_internet()
             node_texts = []
@@ -144,15 +150,27 @@ class Dashboard(tk.Frame):
                     node_texts.append(f"{host:<20} {ms} ms")
                 else:
                     node_texts.append(f"{host:<20} 超时")
-            self.after(0, self._apply_nodes, ok, "\n".join(node_texts))
+            # 查询出口公网 IPv4 / IPv6
+            from app.core import public_expose
+            pub4 = public_expose.get_public_ipv4(timeout=4)
+            pub6 = public_expose.get_public_ipv6(timeout=4)
+            self.after(0, self._apply_nodes, ok, "\n".join(node_texts), pub4, pub6)
 
         threading.Thread(target=worker, daemon=True).start()
         self.after(10000, self._refresh_nodes)
 
-    def _apply_nodes(self, ok, node_text):
-        """在主线程更新外网连通卡片与节点延迟。"""
+    def _apply_nodes(self, ok, node_text, pub4=None, pub6=None):
+        """在主线程更新外网连通卡片、公网 IP 卡片与节点延迟。"""
         if ok:
             self.card_net.set("已连接", theme.GREEN, sub="外网可达")
         else:
             self.card_net.set("断开", theme.RED, sub="外网不可达")
+        if pub4:
+            self.card_pub4.set(pub4, theme.GREEN, sub="出口公网 IPv4")
+        else:
+            self.card_pub4.set("无", theme.ORANGE, sub="未能获取公网 IPv4")
+        if pub6:
+            self.card_pub6.set(pub6, theme.GREEN, sub="出口公网 IPv6")
+        else:
+            self.card_pub6.set("无", theme.ORANGE, sub="无公网 IPv6")
         self.node_lbl.config(text=node_text)
