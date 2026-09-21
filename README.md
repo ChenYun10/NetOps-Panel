@@ -114,7 +114,7 @@ pyinstaller --onefile --windowed --name NetOpsPanel ^
 - 双击 `NetOpsPanel.exe` 直接运行，无需安装任何依赖
 - 内网测速已内嵌 iperf3 客户端，服务端在目标机器上运行 `iperf3 -s -p 5201`
 - 部分功能（数据抓包/安全自测）需管理员权限运行才能读到完整信息
-
+- 外网测速和速度测试部分存在一定缺陷，需注意 
 ## 许可证
 
 [MIT License](LICENSE)
