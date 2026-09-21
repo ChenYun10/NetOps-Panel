@@ -19,7 +19,6 @@ from app.core.logger import log
 MENU_GROUPS = [
     ("概览", [
         ("overview", "概览", "dashboard"),
-        ("workspace", "工作台", "dashboard"),
     ]),
     ("基础检测", [
         ("diag", "诊断检测", "diag"),
