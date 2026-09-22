@@ -30,7 +30,8 @@ class Dashboard(tk.Frame):
         self.meter = monitors.TrafficMeter()
         self._build()
         self._refresh_metrics()
-        self._refresh_nodes()
+        # 延迟后台检测(ping节点/公网IP)，让窗口尽快显示
+        self.after(800, self._refresh_nodes)
 
     # ---------- 构建 UI ----------
     def _build(self):

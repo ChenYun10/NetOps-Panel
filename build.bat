@@ -12,8 +12,9 @@ if exist build rmdir /s /q build
 if exist dist rmdir /s /q dist
 if exist NetOpsPanel.spec del /q NetOpsPanel.spec
 
-echo [3/3] 打包为单文件 exe（内嵌 iperf3）...
+echo [3/3] 打包为单文件 exe（内嵌 iperf3 + UPX 压缩加速启动）...
 pyinstaller --onefile --windowed --name NetOpsPanel ^
+    --upx-dir bin ^
     --add-binary "bin/iperf3.exe;." ^
     --add-binary "bin/cygwin1.dll;." ^
     main.py || goto :err
